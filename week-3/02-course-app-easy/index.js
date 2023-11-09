@@ -18,10 +18,12 @@ const adminAuthentication=(req,res,next)=>{
     res.status(403).json({message:'Admin authentication failed'});
   }
 }
+
 const userAuthentication=(req,res,next)=> {
   const{username,password}=req.headers;
   const user =USERS.find(a=>a.username === username && a.password===password);
   if(user){
+    req.user=user;
     next();
   }
   else{
@@ -34,7 +36,6 @@ app.post('/admin/signup', (req, res) => {
   // logic to sign up admin
 
   const admin = req.body;
-  const {username,password}=req.body;
   const existingAdmin=ADMINS.find(a=>a.username === admin.username);
   if(existingAdmin){
     res.status(403).json({message:'Admin already exists'});
@@ -149,7 +150,7 @@ app.post('/users/courses/:courseId',userAuthentication, (req, res) => {
   }
 });
 
-app.get('/users/purchasedCourses', (req, res) => {
+app.get('/users/purchasedCourses', userAuthentication,(req, res) => {
   // logic to view purchased courses
   const purchasedCourses=COURSES.filter(c=>req.user.purchasedCourses.includes(c.id));
   res.json({purchasedCourses});
