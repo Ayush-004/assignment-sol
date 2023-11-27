@@ -8,6 +8,16 @@ let ADMINS = [];
 let USERS = [];
 let COURSES = [];
 
+const secretKey ="Secrettt";
+const generateJwt=(user)=>{
+  const payload = {username:user.username,};
+  return jwt.sign(payload, secretKey,{expiresIn: '1h'});
+}
+
+const authenticateJwt=(req,res,next)=>{
+  const authHeader = req.headers.authorization;
+
+}
 // Admin routes
 app.post('/admin/signup', (req, res) => {
   // logic to sign up admin
